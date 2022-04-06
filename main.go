@@ -3,14 +3,14 @@ package main
 import (
 	"booking-app/helper"
 	"fmt"
-	"strings"
+	"strconv"
 )
 
 const conferenceTickets int = 50 // package level variable
 
 var conferenceName string = "Go Conference"
 var remainingTickets uint = 50
-var bookings = []string{}
+var bookings = make([]map[string]string, 0)
 
 func main() {
 	// var conferenceName string = "Go Conference"
@@ -60,11 +60,9 @@ func greetUsers() {
 func getFirstName() []string { //kalo pake return harus di declare juga type output parameternya
 	firstNames := []string{}
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		firstNames = append(firstNames, booking["firstName"])
 	}
 	return firstNames
-	//fmt.Printf("These first names of bookings are: %v\n", firstNames)
 }
 
 func getUserInput() (string, string, string, uint) {
@@ -87,7 +85,17 @@ func getUserInput() (string, string, string, uint) {
 
 func bookticket(userTickets uint, firstName string, lastName string, email string) {
 	remainingTickets = remainingTickets - userTickets
-	bookings = append(bookings, firstName+" "+lastName)
+
+	//create a map
+
+	var userData = make(map[string]string)
+	userData["firstName"] = firstName
+	userData["lastName"] = lastName
+	userData["email"] = email
+	userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10) //convert uint to string
+
+	bookings = append(bookings, userData)
+	fmt.Printf("List of booking is %v\n", bookings)
 
 	fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v\n", firstName, lastName, userTickets, email)
 	fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
